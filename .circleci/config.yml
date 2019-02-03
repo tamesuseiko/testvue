@@ -43,6 +43,6 @@ workflow:
   steps:
     jobs:
       - init
-      - build
+      - build:
          requires:
            - init
