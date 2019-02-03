@@ -14,21 +14,23 @@ jobs:
 
     steps:
       - checkout
-      - run: cd vue-example
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-      - run: npm install -g @vue/cli-service-global
-      - run: npm install
-      - run: npm run build
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-        
+      - setup_remote_docker
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run:
+          name: "Build Docker"
+          command: |
+            docker built -t tamesuseiko/testvue:1.0 .
+            docker push tamesuseiko/testvue:1.0
+      - run:
+          name: "Up to rancher"
+          command: |
+            docker run --rm -it \
+              -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
+              -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
+              -e CATTLE_URL="$CATTLE_URL" \
+              etlweather/gaucho upgrade 1s39 \
+              --batch_size 1 --start_first \
+              --auto_complete --timeout 600 
       - run: echo "Done"
 
