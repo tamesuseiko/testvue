@@ -1,5 +1,10 @@
 version: 2
 jobs:
+  init:
+    docker:
+      - image: circleci/node:7.10
+    step:
+      - run: echo "Done"
   build:
     docker:
       # specify the version you desire here
@@ -33,4 +38,11 @@ jobs:
               --batch_size 1 --start_first \
               --auto_complete --timeout 600 
       - run: echo "Done"
-
+workflow:
+  version: 2
+  steps:
+    jobs:
+      - init
+      - build
+         requires:
+           - init
