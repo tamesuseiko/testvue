@@ -3,7 +3,7 @@ jobs:
   init:
     docker:
       - image: circleci/node:7.10
-    step:
+    steps:
       - run: echo "Done"
   build:
     docker:
