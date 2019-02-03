@@ -20,7 +20,7 @@ jobs:
       - run:
           name: "Build Docker"
           command: |
-            docker built -t tamesuseiko/testvue:1.0 .
+            docker build -t tamesuseiko/testvue:1.0 .
             docker push tamesuseiko/testvue:1.0
       - run:
           name: "Up to rancher"
